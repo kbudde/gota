@@ -117,6 +117,7 @@ func postHandler() http.HandlerFunc {
 			w.Write([]byte("Error while writing the file"))
 			return
 		}
+		log.Info().Str("path", dstPath).Msg("File uploaded successfully")
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("File uploaded successfully"))
 	}
