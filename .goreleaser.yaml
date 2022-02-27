@@ -1,0 +1,97 @@
+before:
+  hooks:
+    - go mod tidy
+builds:
+  - env:
+      - CGO_ENABLED=0
+    targets:
+    - linux_amd64
+    - linux_arm64
+    - linux_arm_6
+    - linux_arm_7
+    tags: timetzdata
+    ldflags: 
+      -  -X main.Version={{.Version}}
+      -  -X main.Revision={{.ShortCommit}}
+      -  -X main.Branch={{.Branch}}
+      -  -X main.BuildDate={{.CommitDate}}
+checksum:
+  name_template: 'checksums.txt'
+
+release:
+  footer: |
+    ## Docker images
+    - `docker pull ghcr.io/kbudde/gota:{{.Version}}`
+    - `docker pull ghcr.io/kbudde/gota:{{.ShortCommit}}`
+dockers:
+- goos: linux
+  goarch: amd64
+  image_templates:
+    - "ghcr.io/kbudde/gota:linux-amd64-{{.ShortCommit}}"
+  use: buildx
+  build_flag_templates:
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/kbudde/gota"
+  - "--platform=linux/amd64"
+
+- goos: linux
+  goarch: arm
+  goarm: 6
+  image_templates:
+  - "ghcr.io/kbudde/gota:linux-arm6-{{.ShortCommit}}"
+  use: buildx
+  build_flag_templates:
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/kbudde/gota"
+  - "--platform=linux/arm/v6"
+
+- goos: linux
+  goarch: arm
+  goarm: 7
+  image_templates:
+  - "ghcr.io/kbudde/gota:linux-arm7-{{.ShortCommit}}"
+  use: buildx
+  build_flag_templates:
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/kbudde/gota"
+  - "--platform=linux/arm/v7"
+
+- goos: linux
+  goarch: arm64
+  image_templates:
+  - "ghcr.io/kbudde/gota:linux-arm64-{{.ShortCommit}}"
+  use: buildx
+  build_flag_templates:
+  - "--label=org.opencontainers.image.created={{.Date}}"
+  - "--label=org.opencontainers.image.title={{.ProjectName}}"
+  - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+  - "--label=org.opencontainers.image.version={{.Version}}"
+  - "--label=org.opencontainers.image.source=https://github.com/kbudde/gota"
+  - "--platform=linux/arm64"
+
+
+docker_manifests:
+-
+  name_template: ghcr.io/kbudde/gota:latest
+  image_templates:
+  - ghcr.io/kbudde/gota:linux-amd64-{{.ShortCommit}}
+  - ghcr.io/kbudde/gota:linux-arm6-{{.ShortCommit}}
+  - ghcr.io/kbudde/gota:linux-arm7-{{.ShortCommit}}
+  - ghcr.io/kbudde/gota:linux-arm64-{{.ShortCommit}}
+-
+  name_template: ghcr.io/kbudde/gota:{{.Version}}
+  image_templates:
+  - ghcr.io/kbudde/gota:linux-amd64-{{.ShortCommit}}
+  - ghcr.io/kbudde/gota:linux-arm6-{{.ShortCommit}}
+  - ghcr.io/kbudde/gota:linux-arm7-{{.ShortCommit}}
+  - ghcr.io/kbudde/gota:linux-arm64-{{.ShortCommit}}
+
