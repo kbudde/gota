@@ -1,6 +1,6 @@
 module github.com/kbudde/gota
 
-go 1.17
+go 1.18
 
 require (
 	github.com/kelseyhightower/envconfig v1.4.0
